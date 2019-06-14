@@ -10,7 +10,8 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
-- script: npm run build
+- script: |
+    npm run build
 
 - task: PublishBuildArtifacts@1
   inputs:

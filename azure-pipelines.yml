@@ -11,7 +11,7 @@ pool:
 
 steps:
 - script: |
-    npm run build
+    npm run compile
 
 - task: PublishBuildArtifacts@1
   inputs:

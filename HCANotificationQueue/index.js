@@ -1,27 +1,33 @@
 var azure = require("azure");
 
 module.exports = async function (context, myQueueItem) {
-    context.log('JavaScript queue trigger function processed work item', myQueueItem);
-    var notificationHubService = azure.createNotificationHubService('hca-notification-hub','Endpoint=sb://hca-notification-ns.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=ZdzpGhWYuFDixDisOP2opxp34psyT64TTwY1nOm07Jg=');
+    context.log('JavaScript queue trigger function processed work item - \n', myQueueItem);
+    var notificationHubService = azure.createNotificationHubService('hca-notification-hub', 'Endpoint=sb://hca-notification-ns.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=ZdzpGhWYuFDixDisOP2opxp34psyT64TTwY1nOm07Jg=');
 
-    var payload = {
+    var queueItemJson = myQueueItem;
+    var notification = queueItemJson.notification;
+    var tags = queueItemJson.tags;
+
+    var gcmPayload = {
         data: {
-          message: 'Helloooooooooooooo!'
+          message: JSON.stringify(notification)
         }
       };
-      notificationHubService.gcm.send(null, payload, function(error){
-        if(!error){
-          context.log('chala gya gcm p.');
-        }
+      notificationHubService.gcm.send(null, gcmPayload, function(error){
+        if(!error){}
       });
 
-    var payload={
-       alert: 'Helloooooooooo!'
+    var apnsPayload={
+       aps: {
+         alert: {
+           body: JSON.stringify(notification.text)
+         },
+         sound: 'default'
+       },
+       userInfo: JSON.stringify(notification)
      };
-    notificationHubService.apns.send(null, payload, function(error){
-      if(!error){
-        context.log('chala gya apns p.');
-      }
+    notificationHubService.apns.send(null, apnsPayload, function(error){
+      if(!error){}
     });
     context.done();
 };

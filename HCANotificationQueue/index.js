@@ -2,7 +2,7 @@ var azure = require("azure");
 
 module.exports = async function (context, myQueueItem) {
     context.log('JavaScript queue trigger function processed work item - \n', myQueueItem);
-    var notificationHubService = azure.createNotificationHubService('hca-notification-hub', 'Endpoint=sb://hca-notification-ns.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=ZdzpGhWYuFDixDisOP2opxp34psyT64TTwY1nOm07Jg=');
+    var notificationHubService = azure.createNotificationHubService(process.env["HUB_NAME"], process.env["HUB_CONNECTION_STRING"]);
 
     var queueItemJson = myQueueItem;
     var notification = queueItemJson.notification;
